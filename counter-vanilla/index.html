@@ -2,103 +2,114 @@
 <html>
 
 <head>
-  <title>Redux basic example - Adapted to ES6</title>
-  <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
+    <title>Redux basic example - Adapted to ES6</title>
+    <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
 </head>
 
 <body>
-  <div>
-    <p>
-      Clicked: <span id="value">0</span> times
-      <button id="increment">+</button>
-      <button id="decrement">-</button>
-      <button id="incrementIfOdd">Increment if odd</button>
-      <button id="incrementAsync">Increment async</button>
-    </p>
-  </div>
-  <script>
-    let store;
+    <div>
+        <p>
+            <h3>Wait a couple seconds for automatic store updates</h3> Clicked: <span id="value">0</span> times
+            <button id="increment">+</button>
+            <button id="decrement">-</button>
+            <button id="incrementIfOdd">Increment if odd</button>
+            <button id="incrementAsync">Increment async</button>
+        </p>
+    </div>
+    <script>
+        let store;
 
-    // This is our reducer
-    const counter = (state = 0, action) => {
-      console.log(store);
-      console.log(typeof store);
+        // This is our reducer
+        const counter = (state = 0, action) => {
+            console.log(store);
+            console.log(typeof store);
 
-      const stateCopy = JSON.parse(JSON.stringify(state)); // Similar operation to Object.assign({}, value);
+            // We always copy the state, never mutate it directly because that's the store's job.
+            const stateCopy = JSON.parse(JSON.stringify(state)); // Similar operation to Object.assign({}, value);
 
-      switch (action.type) {
-        case 'INCREMENT':
-          return stateCopy + 1
-        case 'DECREMENT':
-          return stateCopy - 1
-        default:
-          return stateCopy
-      }
 
-    }
+            // Do you thang
+            switch (action.type) {
+                case 'INCREMENT':
+                    return stateCopy + 1
+                case 'DECREMENT':
+                    return stateCopy - 1
+                default:
+                    return stateCopy
+            }
 
-    // This is how we change the store
-    store = Redux.createStore(counter)
-    const valueEl = document.getElementById('value')
-
-    const render = () => {
-      valueEl.innerHTML = store.getState().toString()
-      console.log("store", store.getState());
-    }
-
-    render();
-    store.subscribe(render);
-
-    setTimeout(() => {
-      store.dispatch({
-        type: 'INCREMENT'
-      })
-    }, 2000);
-
-    setTimeout(() => {
-      store.dispatch({
-        type: 'DECREMENT'
-      })
-    }, 3000);
-
-    setTimeout(() => {
-      store.dispatch({
-        type: 'INCREMENT'
-      })
-    }, 4000);
-
-    document.getElementById('increment')
-      .addEventListener('click', () => {
-        store.dispatch({
-          type: 'INCREMENT'
-        })
-      })
-
-    document.getElementById('decrement')
-      .addEventListener('click', () => {
-        store.dispatch({
-          type: 'DECREMENT'
-        })
-      })
-
-    document.getElementById('incrementIfOdd')
-      .addEventListener('click', () => {
-        if (store.getState() % 2 !== 0) {
-          store.dispatch({
-            type: 'INCREMENT'
-          })
         }
-      })
 
-    document.getElementById('incrementAsync')
-      .addEventListener('click', () => {
+        // This is how we change the UI - the
+        store = Redux.createStore(counter);
+        const valueEl = document.getElementById('value')
+
+        // The function to get the state from the store and then display it
+        const render = () => {
+            valueEl.innerHTML = store.getState().toString()
+            console.log("store", store.getState());
+        }
+
+        // The store subscibes to the "render" function. So anytime an action is dispatched, the store will automatically change the UI
+        store.subscribe(render);
+
+
+        // Test some automatic dispatches
         setTimeout(() => {
-          store.dispatch({
-            type: 'INCREMENT'
-          })
-        }, 1000)
-      })
-  </script>
+            store.dispatch({
+                type: 'INCREMENT'
+            })
+        }, 2000);
+
+        setTimeout(() => {
+            store.dispatch({
+                type: 'DECREMENT'
+            })
+        }, 3000);
+
+        setTimeout(() => {
+            store.dispatch({
+                type: 'INCREMENT'
+            })
+        }, 4000);
+
+
+
+        // Add some event listeners for the buttons
+        document.getElementById('increment')
+            .addEventListener('click', () => {
+                store.dispatch({
+                    type: 'INCREMENT'
+                })
+            })
+
+        document.getElementById('decrement')
+            .addEventListener('click', () => {
+                store.dispatch({
+                    type: 'DECREMENT'
+                })
+            })
+
+        document.getElementById('incrementIfOdd')
+            .addEventListener('click', () => {
+                if (store.getState() % 2 !== 0) {
+                    store.dispatch({
+                        type: 'INCREMENT'
+                    })
+                }
+            })
+
+
+        // sort of async
+        document.getElementById('incrementAsync')
+            .addEventListener('click', () => {
+                setTimeout(() => {
+                    store.dispatch({
+                        type: 'INCREMENT'
+                    })
+                }, 1000)
+            })
+    </script>
 </body>
 
 </html>
